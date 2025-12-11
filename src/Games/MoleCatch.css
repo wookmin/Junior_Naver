@@ -1,0 +1,219 @@
+.mole-container {
+  box-sizing: border-box;
+  width: 100%;           /* 화면에 꽉 차되 */
+  max-width: 360px;      /* 최대 360px까지만 */
+  margin: 24px auto;
+  padding: 16px 14px 18px;
+  text-align: center;
+  font-family: "Pretendard", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: #475569;
+  background: #f8fafc;
+  border-radius: 18px;
+  border: 2px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.mole-container h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  letter-spacing: 0.03em;
+  color: #334155;
+}
+
+/* 상단 정보바 */
+.info {
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #e0f2fe; /* 연한 파랑 */
+  border: 1px solid #bfdbfe;
+}
+
+.info div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 게임 보드 */
+.grid {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border-radius: 16px;
+  background: #e5e7eb;
+  border: 2px solid #d4d4d8;
+  position: relative;
+  /* 🔥 고정 height 제거 */
+}
+
+/* 일시정지 상태 표시 */
+.grid.paused::after {
+  content: "PAUSED";
+  position: absolute;
+  inset: 0;
+  background: rgba(248, 250, 252, 0.85);
+  color: #64748b;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.18em;
+}
+
+/* 칸을 정사각형으로 맞추는 방식 (화면 작아져도 비율만 유지) */
+.hole {
+  width: 100%;
+  aspect-ratio: 1 / 1;   /* 정사각형 */
+  background: #f5e0c3;
+  border-radius: 14px;
+  cursor: pointer;
+  position: relative;
+  transition:
+    background 0.18s ease,
+    transform 0.12s ease;
+}
+
+.hole:hover {
+  transform: translateY(1px);
+}
+
+/* 두더지가 올라온 구멍 */
+.mole {
+  background: #f9d39b; /* 조금 더 밝은 브라운 */
+}
+
+/* 두더지 위치는 그대로 중앙 정렬 */
+.mole::after {
+  content: "🐹";
+  font-size: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: molePop 0.18s ease-out;
+}
+
+@keyframes molePop {
+  0% {
+    transform: translate(-50%, -40%) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* 버튼 영역 */
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 공통 버튼 스타일 */
+.start-btn,
+.pause-btn,
+.back-btn {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #1f2933;
+  letter-spacing: 0.02em;
+}
+
+/* 파스텔 버튼 컬러 */
+.start-btn {
+  background: #bbf7d0; /* 민트 */
+}
+.start-btn:hover {
+  background: #86efac;
+}
+
+.pause-btn {
+  background: #fef3c7; /* 연노랑 */
+}
+.pause-btn:hover {
+  background: #fde68a;
+}
+
+.back-btn {
+  background: #bfdbfe; /* 연파랑 */
+}
+.back-btn:hover {
+  background: #93c5fd;
+}
+
+/* 일시정지 오버레이 */
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(248, 250, 252, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pause-box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 18px 14px;
+  min-width: 220px;
+  border: 2px solid #e5e7eb;
+}
+
+.pause-box p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.pause-box button {
+  margin-top: 6px;
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: #bfdbfe;
+  color: #1e3a8a;
+}
+
+.pause-box button:last-child {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+/* 작은 화면 대응 */
+@media (max-width: 420px) {
+  .mole-container {
+    max-width: 100%;
+    margin: 16px auto;
+    padding: 14px 10px 16px;
+  }
+
+  .grid {
+    height: 320px;
+  }
+
+  .hole {
+    height: 90px;
+  }
+}
