@@ -106,7 +106,7 @@ const ReactionSpeed = ({ onGoHome, nickname }) => {
                 </div>
                 <div style={{display:'flex', gap:'10px', marginTop:'20px'}}>
                     <button className="btn-home" onClick={resetGame}>다시 하기</button>
-                    <button className="btn-home" onClick={onGoHome}>메인으로</button>
+                    <button className="btn-home" onClick={onGoHome}>홈으로</button>
                 </div>
             </div>
         );
@@ -141,7 +141,7 @@ const ReactionSpeed = ({ onGoHome, nickname }) => {
                     zIndex: 10
                 }}
             >
-                게임 종료
+                홈으로
             </button>
         </div>
     );

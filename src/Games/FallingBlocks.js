@@ -1,6 +1,6 @@
-// src/Games/FallingBlocks.jsx
+// 중간에 있는 "홈으로" 버튼을 삭제하고, 아래쪽 버튼만 남기기
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./FallingBlocks.css";
 import { saveScore } from "../api";
 
@@ -163,6 +163,7 @@ function FallingBlocks({ onGoHome, nickname }) {
     setScore(0);
     setIsGameOver(false);
     setIsReady(false);
+    setBlocks([]);
   };
 
   // 다시 시작
@@ -174,11 +175,12 @@ function FallingBlocks({ onGoHome, nickname }) {
   };
 
   // 메인으로
-  const handleGoMain = () => {
-    blocks.current = [];
+  const handleExitToHome = () => {
+
+    // 상태 초기화
+    setIsReady(true);
     setScore(0);
     setIsGameOver(false);
-    setIsReady(true);
 
     if (onGoHome) {
       onGoHome();
@@ -209,10 +211,7 @@ function FallingBlocks({ onGoHome, nickname }) {
               <h2>블럭 피하기</h2>
               <p>좌우 방향키로 블럭을 피해봐!</p>
               <button className="start-btn" onClick={handleStart}>
-                시작하기
-              </button>
-              <button className="main-btn" onClick={handleGoMain}>
-                홈으로
+                {isGameOver ? '다시 시작' : '게임 시작'}
               </button>
             </div>
           </div>
@@ -228,10 +227,6 @@ function FallingBlocks({ onGoHome, nickname }) {
               <button className="restart-btn" onClick={handleRestart}>
                 다시 시작
               </button>
-
-              <button className="main-btn" onClick={handleGoMain}>
-                메인 페이지로
-              </button>
             </div>
           </div>
         )}
@@ -239,7 +234,7 @@ function FallingBlocks({ onGoHome, nickname }) {
 
       {/* 하단 홈 버튼 (게임 중 / 대기 중 공통) */}
       <div className="control-buttons">
-        <button className="main-btn" onClick={handleGoMain}>
+        <button className="main-btn" onClick={handleExitToHome}>
           홈으로
         </button>
       </div>

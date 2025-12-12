@@ -318,7 +318,7 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
             <div className="controls">
                 {gameStatus === 'ready' ? (
                     <button onClick={startGame} className="btn-start">
-                        ▶ GAME START
+                        ▶ 게임 시작
                     </button>
                 ) : (
                     <button
@@ -359,7 +359,7 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
                 </div>
             </div>
 
-            <button className="home-button" onClick={onGoHome}>메인으로 돌아가기</button>
+            <button className="home-button" onClick={onGoHome}>홈으로</button>
 
             {/* 결과 모달 (게임 클리어 or 게임 오버) */}
             {(gameStatus === 'finished' || gameStatus === 'gameover') && (
