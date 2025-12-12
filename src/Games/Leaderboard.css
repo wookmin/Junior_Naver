@@ -1,0 +1,240 @@
+.leaderboard-container {
+  background: #f7f5fa;
+  border-radius: 20px;
+  padding: 32px;
+  margin: 20px auto;
+  max-width: 1200px;
+  box-shadow: 0 4px 16px rgba(180, 180, 200, 0.12);
+}
+
+.leaderboard-container h2 {
+  text-align: center;
+  color: #6dd6ed;
+  margin-bottom: 28px;
+  font-size: 2rem;
+}
+
+/* 전체 화면 리더보드 스타일 */
+.leaderboard-fullscreen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e6e6fa 0%, #f0f4ff 50%, #ffe5ec 100%);
+  padding: 40px 20px;
+}
+
+.leaderboard-fullscreen h1 {
+  text-align: center;
+  color: #6dd6ed;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+}
+
+.rankings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.ranking-card {
+  background: #f0f4ff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(180, 180, 200, 0.08);
+  border: 2px solid #e3eafc;
+}
+
+.ranking-card h3 {
+  color: #3a5ca8;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border-radius: 10px;
+  border-left: 4px solid #6dd6ed;
+  gap: 12px;
+  position: relative;
+}
+
+/* 1등 - 금색 */
+.ranking-item.rank-1 {
+  background: #fff;
+  border-left-color: #ffa500;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.ranking-item.rank-1 .rank {
+  background: #ff9900;
+  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.4);
+}
+
+/* 2등 - 은색 */
+.ranking-item.rank-2 {
+  background: #fff;
+  border-left-color: #b0b0b0;
+  box-shadow: 0 4px 12px rgba(192, 192, 192, 0.3);
+}
+
+.ranking-item.rank-2 .rank {
+  background: #b4b4b4;
+  box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
+}
+
+/* 3등 - 동색 */
+.ranking-item.rank-3 {
+  background: #fff;
+  border-left-color: #cd7f32;
+  box-shadow: 0 4px 12px rgba(205, 127, 50, 0.3);
+}
+
+.ranking-item.rank-3 .rank {
+  background: #c27930;
+  box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
+}
+
+.ranking-item .rank {
+  background: #6dd6ed;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.ranking-item .nickname {
+  flex: 1;
+  color: #333;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-item .score {
+  color: #3a5ca8;
+  font-weight: bold;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* 🔹 닉네임 수정용 인풋 */
+.nickname-input {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  box-sizing: border-box;
+  background: #f9fafb;
+}
+
+/* 🔹 액션 버튼 묶음 (수정/저장/취소/삭제) */
+.actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* 수정/저장/취소 버튼 공통 */
+.edit-btn,
+.edit-save-btn,
+.edit-cancel-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* 수정 버튼 */
+.edit-btn {
+  background: #e0f2fe;
+  color: #1d4ed8;
+}
+
+/* 저장 버튼 */
+.edit-save-btn {
+  background: #bbf7d0;
+  color: #065f46;
+}
+
+/* 취소 버튼 */
+.edit-cancel-btn {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+/* 기존 삭제 버튼 (actions 안에서 사용) */
+.delete-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 8px;
+  min-width: 28px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.delete-btn:hover {
+  background: #ff4757;
+  transform: translateY(-1px);
+}
+
+.delete-btn:active {
+  transform: translateY(0);
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-style: italic;
+}
+
+.home-button {
+  display: block;
+  margin: 40px auto 0;
+  padding: 14px 32px;
+  background: #6dd6ed;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.home-button:hover {
+  background: #5bc5db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(109, 214, 237, 0.3);
+}
+
+.home-button:active {
+  transform: translateY(0);
+}
