@@ -1,6 +1,4 @@
-// 중간에 있는 "홈으로" 버튼을 삭제하고, 아래쪽 버튼만 남기기
-
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./FallingBlocks.css";
 import { saveScore } from "../api";
 
@@ -13,6 +11,12 @@ const PLAYER_SPEED = 6;
 
 const BLOCK_W = 40;
 const BLOCK_H = 20;
+
+// 난이도 관련 설정
+const INITIAL_BLOCK_SPEED = 2 + Math.random() * 2; // 블록 초기 속도
+const INITIAL_SPAWN_INTERVAL = 700; // 블록 생성 간격 (ms)
+const BLOCK_SPEED_INCREASE = 0.5; // 블록 속도 증가치
+const SPAWN_RATE_DECREASE = 100; // 블록 생성 간격 감소 (밀리초 단위)
 
 // App.js 예시:
 // <FallingBlocks onGoHome={() => setCurrentView('home')} nickname={nickname} />
@@ -28,6 +32,10 @@ function FallingBlocks({ onGoHome, nickname }) {
   const keys = useRef({ left: false, right: false });
   const player = useRef({ x: W / 2 - PLAYER_W / 2, y: H - PLAYER_H - 10 });
   const blocks = useRef([]);
+
+  // 난이도 관련 변수
+  const [blockSpeed, setBlockSpeed] = useState(INITIAL_BLOCK_SPEED); // 블록 속도 초기화
+  const [spawnInterval, setSpawnInterval] = useState(INITIAL_SPAWN_INTERVAL); // 블록 생성 간격 초기화
 
   // 키 입력 처리
   useEffect(() => {
@@ -50,7 +58,6 @@ function FallingBlocks({ onGoHome, nickname }) {
 
   // 게임 루프
   useEffect(() => {
-    // 준비 중이거나 게임 오버면 루프 돌리지 않음
     if (isReady || isGameOver) {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
@@ -64,9 +71,6 @@ function FallingBlocks({ onGoHome, nickname }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    // 새 게임 시작 시 초기화
-    blocks.current = [];
-    player.current = { x: W / 2 - PLAYER_W / 2, y: H - PLAYER_H - 10 };
     let last = performance.now();
     let spawnTimer = 0;
 
@@ -90,17 +94,17 @@ function FallingBlocks({ onGoHome, nickname }) {
       ctx.fillStyle = "#4caf50";
       ctx.fillRect(player.current.x, player.current.y, PLAYER_W, PLAYER_H);
 
-      // 블럭 생성
-      if (spawnTimer > 700) {
+      // 블록 생성
+      if (spawnTimer > spawnInterval) {
         spawnTimer = 0;
         blocks.current.push({
           x: Math.random() * (W - BLOCK_W),
           y: -BLOCK_H,
-          speed: 2 + Math.random() * 2,
+          speed: blockSpeed,
         });
       }
 
-      // 블럭 이동 + 그리기 + 충돌
+      // 블록 이동 + 그리기 + 충돌
       blocks.current.forEach((b, i) => {
         b.y += b.speed;
 
@@ -125,6 +129,12 @@ function FallingBlocks({ onGoHome, nickname }) {
         }
       });
 
+      // 난이도 증가: 점수가 올라갈 때마다 블록 속도와 생성 간격을 줄임
+      if (score > 0 && score % 10 === 0) {
+        setBlockSpeed((prevSpeed) => prevSpeed + BLOCK_SPEED_INCREASE); // 블록 속도 증가
+        setSpawnInterval((prevInterval) => Math.max(prevInterval - SPAWN_RATE_DECREASE, 300)); // 블록 생성 간격 감소
+      }
+
       if (!isGameOver && !isReady) {
         animationRef.current = requestAnimationFrame(loop);
       }
@@ -138,14 +148,13 @@ function FallingBlocks({ onGoHome, nickname }) {
         animationRef.current = null;
       }
     };
-  }, [isReady, isGameOver]);
+  }, [isReady, isGameOver, score, blockSpeed, spawnInterval]);
 
   // 게임 오버 시 점수 저장
   useEffect(() => {
     if (!isGameOver) return;
     if (score <= 0) return;
 
-    // ✅ 홈 화면에서 닉네임을 입력한 경우에만 저장
     if (!nickname) return;
 
     (async () => {
@@ -157,30 +166,34 @@ function FallingBlocks({ onGoHome, nickname }) {
     })();
   }, [isGameOver, score, nickname]);
 
-
   // 시작하기
   const handleStart = () => {
     setScore(0);
     setIsGameOver(false);
     setIsReady(false);
-    setBlocks([]);
+    setBlockSpeed(INITIAL_BLOCK_SPEED); // 난이도 초기화
+    setSpawnInterval(INITIAL_SPAWN_INTERVAL); // 난이도 초기화
+    blocks.current = []; // 블록 상태 초기화
   };
 
   // 다시 시작
   const handleRestart = () => {
-    blocks.current = [];
     setScore(0);
     setIsGameOver(false);
     setIsReady(false);
+    setBlockSpeed(INITIAL_BLOCK_SPEED); // 난이도 초기화
+    setSpawnInterval(INITIAL_SPAWN_INTERVAL); // 난이도 초기화
+    blocks.current = []; // 블록 상태 초기화
   };
 
   // 메인으로
-  const handleExitToHome = () => {
-
-    // 상태 초기화
+  const handleGoMain = () => {
     setIsReady(true);
     setScore(0);
     setIsGameOver(false);
+    setBlockSpeed(INITIAL_BLOCK_SPEED); // 난이도 초기화
+    setSpawnInterval(INITIAL_SPAWN_INTERVAL); // 난이도 초기화
+    blocks.current = []; // 블록 상태 초기화
 
     if (onGoHome) {
       onGoHome();
@@ -211,7 +224,7 @@ function FallingBlocks({ onGoHome, nickname }) {
               <h2>블럭 피하기</h2>
               <p>좌우 방향키로 블럭을 피해봐!</p>
               <button className="start-btn" onClick={handleStart}>
-                {isGameOver ? '다시 시작' : '게임 시작'}
+                시작하기
               </button>
             </div>
           </div>
@@ -234,7 +247,7 @@ function FallingBlocks({ onGoHome, nickname }) {
 
       {/* 하단 홈 버튼 (게임 중 / 대기 중 공통) */}
       <div className="control-buttons">
-        <button className="main-btn" onClick={handleExitToHome}>
+        <button className="main-btn" onClick={handleGoMain}>
           홈으로
         </button>
       </div>
