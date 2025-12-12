@@ -127,7 +127,7 @@ function MoleCatch({ onGoHome, nickname }) {
       <div className="buttons">
         {!isPlaying && (
           <button className="start-btn" onClick={startGame}>
-            {isGameOver ? '다시 시작' : '게임 시작'}
+            {isGameOver ? '다시 시작' : '▶ 게임 시작'}
           </button>
         )}
 
@@ -148,7 +148,7 @@ function MoleCatch({ onGoHome, nickname }) {
           <div className="pause-box">
             <p>⏸ 일시 정지 중</p>
             <button onClick={handlePauseToggle}>계속하기</button>
-            <button onClick={handleExitToHome}>홈으로 나가기</button>
+            <button onClick={handleExitToHome}>홈으로</button>
           </div>
         </div>
       )}
