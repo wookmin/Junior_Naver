@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./FallingBlocks.css";
 import { saveScore } from "../api";
+import { Link } from 'react-router-dom';
 
 const W = 400;
 const H = 600;
@@ -21,7 +22,7 @@ const SPAWN_RATE_DECREASE = 100; // 블록 생성 간격 감소 (밀리초 단�
 // App.js 예시:
 // <FallingBlocks onGoHome={() => setCurrentView('home')} nickname={nickname} />
 
-function FallingBlocks({ onGoHome, nickname }) {
+function FallingBlocks({ nickname }) {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
@@ -186,20 +187,6 @@ function FallingBlocks({ onGoHome, nickname }) {
     blocks.current = []; // 블록 상태 초기화
   };
 
-  // 메인으로
-  const handleGoMain = () => {
-    setIsReady(true);
-    setScore(0);
-    setIsGameOver(false);
-    setBlockSpeed(INITIAL_BLOCK_SPEED); // 난이도 초기화
-    setSpawnInterval(INITIAL_SPAWN_INTERVAL); // 난이도 초기화
-    blocks.current = []; // 블록 상태 초기화
-
-    if (onGoHome) {
-      onGoHome();
-    }
-  };
-
   return (
     <div className="canvas-wrapper">
       <h2 className="title">블럭 피하기</h2>
@@ -247,8 +234,8 @@ function FallingBlocks({ onGoHome, nickname }) {
 
       {/* 하단 홈 버튼 (게임 중 / 대기 중 공통) */}
       <div className="control-buttons">
-        <button className="main-btn" onClick={handleGoMain}>
-          홈으로
+        <button className="main-btn">
+          <Link to="/">홈으로</Link>
         </button>
       </div>
     </div>

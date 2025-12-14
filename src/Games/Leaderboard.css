@@ -1,69 +1,81 @@
-.leaderboard-container {
-  background: #f7f5fa;
-  border-radius: 20px;
-  padding: 32px;
-  margin: 20px auto;
-  max-width: 1200px;
-  box-shadow: 0 4px 16px rgba(180, 180, 200, 0.12);
-}
-
-.leaderboard-container h2 {
-  text-align: center;
-  color: #6dd6ed;
-  margin-bottom: 28px;
-  font-size: 2rem;
-}
-
 /* 전체 화면 리더보드 스타일 */
 .leaderboard-fullscreen {
   min-height: 100vh;
   background: linear-gradient(135deg, #e6e6fa 0%, #f0f4ff 50%, #ffe5ec 100%);
   padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* 게임 순위 제목 스타일 */
 .leaderboard-fullscreen h1 {
   text-align: center;
   color: #6dd6ed;
   margin-bottom: 40px;
-  font-size: 2.5rem;
+  font-size: 2.5rem;  /* 이 값을 줄이면 폰트 크기 줄어듦 */
 }
 
+
+/* 순위 그리드 스타일 - 카드 가로 배치 */
 .rankings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  display: flex;
+  justify-content: space-between; /* 카드들이 가로로 나열되도록 */
+  gap: 16px; /* 카드 간격을 줄여서 빈 공간을 최소화 */
+  width: 100%;
+  max-width: 100%; /* 최대 너비 100%로 설정 */
+  margin: 0 auto;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
+/* 각 순위 카드 스타일 */
 .ranking-card {
   background: #f0f4ff;
   border-radius: 16px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 2px 8px rgba(180, 180, 200, 0.08);
   border: 2px solid #e3eafc;
+  width: 23%; /* 4개의 카드가 한 줄로 나열될 수 있도록 23% 너비 설정 */
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
 }
 
+.ranking-card:hover {
+  transform: scale(1.05); /* 카드에 마우스를 올리면 확대 */
+}
+
+/* 제목 스타일 */
 .ranking-card h3 {
   color: #3a5ca8;
   margin-bottom: 16px;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* 제목 폰트 크기 조정 */
 }
 
+/* 순위 항목 */
 .ranking-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 12px; /* 항목 간격을 조금 늘려서 더 여유 있게 */
 }
 
+/* 순위 항목 스타일 */
 .ranking-item {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 10px;
   background: #fff;
   border-radius: 10px;
   border-left: 4px solid #6dd6ed;
-  gap: 12px;
+  gap: 15px;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 /* 1등 - 금색 */
@@ -105,13 +117,14 @@
 .ranking-item .rank {
   background: #6dd6ed;
   color: white;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  font-size: 0.85rem;
   flex-shrink: 0;
 }
 
@@ -119,15 +132,17 @@
   flex: 1;
   color: #333;
   font-weight: 600;
+  font-size: 0.85rem; /* 닉네임 글자 크기 줄이기 */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: calc(100% - 90px); /* 닉네임이 잘리지 않도록 최대 너비 설정 */
 }
 
 .ranking-item .score {
   color: #3a5ca8;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   flex-shrink: 0;
 }
 

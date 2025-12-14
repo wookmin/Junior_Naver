@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAllRankings, deleteScore, updateNickname } from '../api';
 import './Leaderboard.css';
+import { Link } from 'react-router-dom';
 
 const Leaderboard = ({ onGoHome }) => {
   const [rankings, setRankings] = useState({});
@@ -156,8 +157,8 @@ const Leaderboard = ({ onGoHome }) => {
         ))}
       </div>
 
-      <button className="home-button" onClick={onGoHome}>
-        메인으로 돌아가기
+      <button className="home-button">
+        <Link to="/">홈으로</Link>
       </button>
     </div>
   );

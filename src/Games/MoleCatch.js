@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import './MoleCatch.css';
 import { saveScore } from '../api';
+import { Link } from 'react-router-dom';
 
-// App.js에서 이렇게 넘겨줌:
-// <MoleCatch onGoHome={() => setCurrentView('home')} nickname={nickname} />
-
-function MoleCatch({ onGoHome, nickname }) {
+function MoleCatch({ nickname }) {
   const [moles, setMoles] = useState(Array(9).fill(false));
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
@@ -89,21 +87,6 @@ function MoleCatch({ onGoHome, nickname }) {
     setIsPaused((prev) => !prev);
   };
 
-  const handleExitToHome = () => {
-
-    // 상태 초기화
-    setIsPlaying(false);
-    setIsPaused(false);
-    setIsGameOver(false);
-    setScore(0);
-    setTimeLeft(GAME_TIME);
-    setMoles(Array(9).fill(false));
-
-    if (onGoHome) {
-      onGoHome();
-    }
-  };
-
   return (
     <div className="mole-container">
       <h2>🐹 두더지 잡기 게임</h2>
@@ -137,9 +120,9 @@ function MoleCatch({ onGoHome, nickname }) {
           </button>
         )}
 
-        <button className="back-btn" onClick={handleExitToHome}>
+        <Link to="/" className="back-btn">
           홈으로
-        </button>
+        </Link>
       </div>
 
       {/* 일시정지 오버레이 (선택 사항) */}
@@ -148,7 +131,9 @@ function MoleCatch({ onGoHome, nickname }) {
           <div className="pause-box">
             <p>⏸ 일시 정지 중</p>
             <button onClick={handlePauseToggle}>계속하기</button>
-            <button onClick={handleExitToHome}>홈으로</button>
+            <Link to="/" className="back-btn">
+              홈으로
+            </Link>
           </div>
         </div>
       )}

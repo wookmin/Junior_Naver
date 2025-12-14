@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './AbsolutePitch.css';
 import * as Tone from 'tone';
 import { saveScore } from '../api';
+import { Link } from 'react-router-dom';
 
 // 음계 데이터 (C4 ~ C5)
 const notesData = [
@@ -33,7 +34,7 @@ const LEVEL_CONFIG = {
 const MAX_LEVEL = 6;
 const QUESTIONS_PER_LEVEL = 5;
 
-const AbsolutePitch = ({ onGoHome, nickname }) => {
+const AbsolutePitch = ({ nickname }) => {
     // --- State Management ---
     const [gameStatus, setGameStatus] = useState('ready'); // ready, playing, finished, gameover
     const [currentLevel, setCurrentLevel] = useState(1);
@@ -97,7 +98,6 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
     }, [targetIndices, playPianoSound]);
 
     // --- Game Logic ---
-
     // 문제 생성 함수
     const generateProblem = useCallback((level) => {
         const config = LEVEL_CONFIG[level];
@@ -210,9 +210,6 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
 
     // 건반 클릭 핸들러
     const handleKeyClick = (index) => {
-        // [사용자 요청] 클릭 시 소리 끔
-        // playPianoSound(notesData[index].freq, 0.5); 
-
         if (gameStatus !== 'playing') return;
         if (foundIndices.has(index)) return; // 이미 찾은 건반 무시
 
@@ -275,7 +272,6 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
 
     // 랭크 계산
     const getRank = (score) => {
-        // 총점 만점: (50*5) + (100*5) + ... + (300*5) = 5250점
         if (score >= 5000) return "Absolute God";
         if (score >= 4000) return "Maestro";
         if (score >= 3000) return "Professional";
@@ -336,7 +332,6 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
                     {notesData.map((note, index) => {
                         let style = {};
                         if (note.type === 'black') {
-                            // 검은 건반의 위치 계산 개선
                             const whiteIndex = notesData.slice(0, index).filter(n => n.type === 'white').length;
                             const leftPos = whiteIndex * 60;
                             style = { left: `${leftPos}px` };
@@ -359,7 +354,9 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
                 </div>
             </div>
 
-            <button className="home-button" onClick={onGoHome}>홈으로</button>
+            <button className="home-button">
+                <Link to="/">홈으로</Link>
+            </button>
 
             {/* 결과 모달 (게임 클리어 or 게임 오버) */}
             {(gameStatus === 'finished' || gameStatus === 'gameover') && (
@@ -375,7 +372,9 @@ const AbsolutePitch = ({ onGoHome, nickname }) => {
                         </div>
                         <button className="btn-restart" onClick={startGame}>다시 도전</button>
                         <br /><br />
-                        <button className="btn-restart" style={{ backgroundColor: '#555' }} onClick={onGoHome}>나가기</button>
+                        <button className="btn-restart" style={{ backgroundColor: '#555' }}>
+                            <Link to="/">나가기</Link>
+                        </button>
                     </div>
                 </div>
             )}

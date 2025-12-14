@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './ReactionSpeed.css';
 import { saveScore } from '../api'; 
+import { Link } from 'react-router-dom';
 
-const ReactionSpeed = ({ onGoHome, nickname }) => {
+const ReactionSpeed = ({ nickname }) => {
     // 상태: 'waiting' (시작전/초록), 'ready' (준비/빨강), 'now' (클릭/파랑), 'finished' (결과)
     const [state, setState] = useState('waiting');
     const [message, setMessage] = useState('화면을 클릭하면 시작합니다.');
@@ -106,7 +107,9 @@ const ReactionSpeed = ({ onGoHome, nickname }) => {
                 </div>
                 <div style={{display:'flex', gap:'10px', marginTop:'20px'}}>
                     <button className="btn-home" onClick={resetGame}>다시 하기</button>
-                    <button className="btn-home" onClick={onGoHome}>홈으로</button>
+                    <button className="btn-home">
+                        <Link to="/">홈으로</Link>
+                    </button>
                 </div>
             </div>
         );
@@ -116,7 +119,7 @@ const ReactionSpeed = ({ onGoHome, nickname }) => {
     return (
         <div 
             className={`reaction-game-container state-${state}`} 
-            onMouseDown={handleClick} // 모바일 터치 대응을 위해 onMouseDown 사용 가능 (또는 onClick)
+            onMouseDown={(e) => e.stopPropagation()} // 게임 진행 화면에서 클릭 이벤트 전파 방지
         >
             {state === 'waiting' && result.length === 0 && <h1>Reaction Speed Test</h1>}
             <div className="game-message">{message}</div>
@@ -131,7 +134,6 @@ const ReactionSpeed = ({ onGoHome, nickname }) => {
                 onClick={(e) => {
                     e.stopPropagation();
                     clearTimeout(timeout.current);
-                    onGoHome();
                 }}
                 style={{
                     position: 'absolute',
@@ -141,7 +143,7 @@ const ReactionSpeed = ({ onGoHome, nickname }) => {
                     zIndex: 10
                 }}
             >
-                홈으로
+                <Link to="/">홈으로</Link>
             </button>
         </div>
     );
