@@ -116,7 +116,7 @@ export const fetchAllRankings = async () => {
       } else {
         filtered.sort((a, b) => b.score - a.score);
       }
-      rankings[gameName] = filtered.slice(0, 10);
+      rankings[gameName] = filtered.slice(0, 5);
     });
     
     return rankings;
