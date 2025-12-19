@@ -19,6 +19,60 @@
   font-size: 2.5rem;  /* 이 값을 줄이면 폰트 크기 줄어듦 */
 }
 
+/* 필터 바 스타일: 전체 테마와 어울리도록 부드러운 파스텔 버튼 */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0 auto 20px;
+  width: 100%;
+  max-width: 980px;
+  padding: 8px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.filter-input {
+  flex: 0 1 360px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(59,92,168,0.12);
+  background: rgba(255,255,255,0.9);
+  font-size: 0.95rem;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(60,80,140,0.03);
+}
+
+.confirm-filter-btn,
+.clear-filter-btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.confirm-filter-btn {
+  background: linear-gradient(180deg, #6dd6ed 0%, #5bc5db 100%);
+  color: white;
+  box-shadow: 0 6px 14px rgba(91,197,219,0.15);
+}
+
+.confirm-filter-btn:hover {
+  transform: translateY(-2px);
+}
+
+.clear-filter-btn {
+  background: #fff;
+  color: #6b99fb;
+  border: 1px solid rgba(107,153,251,0.12);
+}
+
+.clear-filter-btn:hover {
+  background: #f7fbff;
+}
+
 
 /* 순위 그리드 스타일 - 카드 가로 배치 */
 .rankings-grid {

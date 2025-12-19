@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 const Leaderboard = ({ onGoHome }) => {
   const [rankings, setRankings] = useState({});
   const [loading, setLoading] = useState(true);
+  const [filterName, setFilterName] = useState('');
+  const [filterInput, setFilterInput] = useState('');
 
   // 닉네임 수정 상태
   const [editingId, setEditingId] = useState(null);
@@ -83,6 +85,36 @@ const Leaderboard = ({ onGoHome }) => {
     <div className="leaderboard-fullscreen">
       <h1>🏆 게임 순위</h1>
 
+      <div className="filter-bar">
+        <input
+          type="text"
+          placeholder="닉네임 검색"
+          value={filterInput}
+          onChange={(e) => setFilterInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') setFilterName(filterInput.trim());
+          }}
+          className="filter-input"
+        />
+        <button
+          className="confirm-filter-btn"
+          onClick={() => setFilterName(filterInput.trim())}
+        >
+          확인
+        </button>
+        {(filterName || filterInput) && (
+          <button
+            className="clear-filter-btn"
+            onClick={() => {
+              setFilterInput('');
+              setFilterName('');
+            }}
+          >
+            필터 해제
+          </button>
+        )}
+      </div>
+
       <div className="rankings-grid">
         {Object.keys(gameNames).map((gameKey) => (
           <div key={gameKey} className="ranking-card">
@@ -90,65 +122,81 @@ const Leaderboard = ({ onGoHome }) => {
 
             {rankings[gameKey] && rankings[gameKey].length > 0 ? (
               <div className="ranking-list">
-                {rankings[gameKey].map((item, index) => (
-                  <div
-                    key={item.id}
-                    className={`ranking-item ${
-                      index < 3 ? `rank-${index + 1}` : ''
-                    }`}
-                  >
-                    <span className="rank">{index + 1}</span>
+                {(() => {
+                  const list = rankings[gameKey];
+                  const name = filterName.trim().toLowerCase();
+                  const toDisplay = name
+                    ? list.filter((it) => (it.nickname || '').toLowerCase() === name)
+                    : list;
 
-                    <span className="nickname">
-                      {editingId === item.id ? (
-                        <input
-                          className="nickname-input"
-                          value={editingNickname}
-                          onChange={(e) => setEditingNickname(e.target.value)}
-                        />
-                      ) : (
-                        item.nickname
-                      )}
-                    </span>
+                  if (toDisplay.length === 0) {
+                    return <p className="no-data">해당 닉네임의 점수가 없습니다.</p>;
+                  }
 
-                    <span className="score">{item.score}</span>
+                  return toDisplay.map((item) => {
+                    const origIndex = list.findIndex((it) => it.id === item.id);
+                    const displayRank = origIndex >= 0 ? origIndex + 1 : '-';
+                    return (
+                      <div
+                        key={item.id}
+                        className={`ranking-item ${
+                          origIndex < 3 && origIndex >= 0 ? `rank-${origIndex + 1}` : ''
+                        }`}
+                      >
+                        <span className="rank">{displayRank}</span>
 
-                    <span className="actions">
-                      {editingId === item.id ? (
-                        <>
-                          <button
-                            className="edit-save-btn"
-                            onClick={() => handleEditSave(item)}
-                          >
-                            저장
-                          </button>
-                          <button
-                            className="edit-cancel-btn"
-                            onClick={handleEditCancel}
-                          >
-                            취소
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            className="edit-btn"
-                            onClick={() => handleEditClick(item)}
-                          >
-                            수정
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleDelete(item.id)}
-                            title="삭제"
-                          >
-                            ✕
-                          </button>
-                        </>
-                      )}
-                    </span>
-                  </div>
-                ))}
+                        <span className="nickname">
+                          {editingId === item.id ? (
+                            <input
+                              className="nickname-input"
+                              value={editingNickname}
+                              onChange={(e) => setEditingNickname(e.target.value)}
+                            />
+                          ) : (
+                            item.nickname
+                          )}
+                        </span>
+
+                        <span className="score">{item.score}</span>
+
+                        <span className="actions">
+                          {editingId === item.id ? (
+                            <>
+                              <button
+                                className="edit-save-btn"
+                                onClick={() => handleEditSave(item)}
+                              >
+                                저장
+                              </button>
+                              <button
+                                className="edit-cancel-btn"
+                                onClick={handleEditCancel}
+                              >
+                                취소
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                className="edit-btn"
+                                onClick={() => handleEditClick(item)}
+                              >
+                                수정
+                              </button>
+                              <button
+                                className="delete-btn"
+                                onClick={() => handleDelete(item.id)}
+                                title="삭제"
+                              >
+                                ✕
+                              </button>
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             ) : (
               <p className="no-data">등록된 점수가 없습니다.</p>
