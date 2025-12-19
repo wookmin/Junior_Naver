@@ -307,3 +307,64 @@
 .home-button:active {
   transform: translateY(0);
 }
+
+/* 필터 및 검색 박스 디자인 */
+.filters {
+  display: flex;
+  justify-content: space-between; /* 두 박스를 좌우로 배치 */
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+/* 게임 선택 드롭다운 */
+.filters select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #fff;
+  width: 200px; /* 너비 고정 */
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filters select:focus {
+  border-color: #6dd6ed; /* 포커스 시 테두리 색상 변경 */
+  outline: none;
+}
+
+/* 닉네임 검색 인풋 */
+.filters input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #fff;
+  width: 250px; /* 너비 고정 */
+  transition: all 0.3s;
+}
+
+.filters input:focus {
+  border-color: #6dd6ed; /* 포커스 시 테두리 색상 변경 */
+  outline: none;
+}
+
+/* 마우스 호버 시 스타일링 */
+.filters select:hover,
+.filters input:hover {
+  border-color: #a0aec0;
+}
+
+/* 화면 크기에 따라 자동으로 정렬되는 반응형 디자인 */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filters select,
+  .filters input {
+    width: 100%;
+  }
+}

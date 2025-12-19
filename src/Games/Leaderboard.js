@@ -1,5 +1,3 @@
-// src/Games/Leaderboard.js
-
 import React, { useState, useEffect } from 'react';
 import { fetchAllRankings, deleteScore, updateNickname } from '../api';
 import './Leaderboard.css';
@@ -8,12 +6,19 @@ import { Link } from 'react-router-dom';
 const Leaderboard = ({ onGoHome }) => {
   const [rankings, setRankings] = useState({});
   const [loading, setLoading] = useState(true);
-  const [filterName, setFilterName] = useState('');
-  const [filterInput, setFilterInput] = useState('');
 
-  // 닉네임 수정 상태
   const [editingId, setEditingId] = useState(null);
   const [editingNickname, setEditingNickname] = useState('');
+
+  const [selectedGame, setSelectedGame] = useState('All');  // 게임 필터
+  const [searchNickname, setSearchNickname] = useState(''); // 닉네임 검색
+
+  const gameNames = {
+    AbsolutePitch: '절대음감 테스트',
+    ReactionSpeed: '반응속도 테스트',
+    MoleCatch: '두더지 잡기 게임',
+    FallingBlocks: '블럭 피하기 게임',
+  };
 
   const loadRankings = async () => {
     setLoading(true);
@@ -31,9 +36,7 @@ const Leaderboard = ({ onGoHome }) => {
 
     const success = await deleteScore(id);
     if (success) {
-      // 삭제 후 다시 불러오기
       await loadRankings();
-      // 혹시 편집 중이던 항목이면 편집 상태 해제
       if (editingId === id) {
         setEditingId(null);
         setEditingNickname('');
@@ -64,18 +67,30 @@ const Leaderboard = ({ onGoHome }) => {
       return;
     }
 
-    // 서버 갱신 후 다시 불러오기
     await loadRankings();
     setEditingId(null);
     setEditingNickname('');
   };
 
-  const gameNames = {
-    AbsolutePitch: '절대음감 테스트',
-    ReactionSpeed: '반응속도 테스트',
-    MoleCatch: '두더지 잡기 게임',
-    FallingBlocks: '블럭 피하기 게임',
+  const handleGameFilterChange = (e) => {
+    setSelectedGame(e.target.value);
   };
+
+  const handleSearchChange = (e) => {
+    setSearchNickname(e.target.value);
+  };
+
+  const filteredRankings = Object.keys(rankings).reduce((acc, gameKey) => {
+    // 게임 필터링: selectedGame이 'All'이 아니면 해당 게임만 필터링
+    if (selectedGame === 'All' || gameNames[gameKey] === selectedGame) {
+      const filtered = rankings[gameKey].filter((item) => {
+        const matchesNickname = item.nickname.toLowerCase().includes(searchNickname.toLowerCase());
+        return matchesNickname;
+      });
+      acc[gameKey] = filtered;
+    }
+    return acc;
+  }, {});
 
   if (loading) {
     return <div className="leaderboard-fullscreen">로딩 중...</div>;
@@ -85,123 +100,100 @@ const Leaderboard = ({ onGoHome }) => {
     <div className="leaderboard-fullscreen">
       <h1>🏆 게임 순위</h1>
 
-      <div className="filter-bar">
+      {/* 게임 필터링 드롭다운 */}
+      <div className="filters">
+        <select value={selectedGame} onChange={handleGameFilterChange}>
+          <option value="All">모든 게임</option>
+          {Object.keys(gameNames).map((gameKey) => (
+            <option key={gameKey} value={gameNames[gameKey]}>
+              {gameNames[gameKey]}
+            </option>
+          ))}
+        </select>
+
+        {/* 닉네임 검색 */}
         <input
           type="text"
           placeholder="닉네임 검색"
-          value={filterInput}
-          onChange={(e) => setFilterInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') setFilterName(filterInput.trim());
-          }}
-          className="filter-input"
+          value={searchNickname}
+          onChange={handleSearchChange}
         />
-        <button
-          className="confirm-filter-btn"
-          onClick={() => setFilterName(filterInput.trim())}
-        >
-          확인
-        </button>
-        {(filterName || filterInput) && (
-          <button
-            className="clear-filter-btn"
-            onClick={() => {
-              setFilterInput('');
-              setFilterName('');
-            }}
-          >
-            필터 해제
-          </button>
-        )}
       </div>
 
       <div className="rankings-grid">
         {Object.keys(gameNames).map((gameKey) => (
-          <div key={gameKey} className="ranking-card">
-            <h3>{gameNames[gameKey]}</h3>
+          // 게임 필터링 후 해당 게임만 보이도록 조건 추가
+          (selectedGame === 'All' || gameNames[gameKey] === selectedGame) && (
+            <div key={gameKey} className="ranking-card">
+              <h3>{gameNames[gameKey]}</h3>
 
-            {rankings[gameKey] && rankings[gameKey].length > 0 ? (
-              <div className="ranking-list">
-                {(() => {
-                  const list = rankings[gameKey];
-                  const name = filterName.trim().toLowerCase();
-                  const toDisplay = name
-                    ? list.filter((it) => (it.nickname || '').toLowerCase() === name)
-                    : list;
+              {filteredRankings[gameKey] && filteredRankings[gameKey].length > 0 ? (
+                <div className="ranking-list">
+                  {filteredRankings[gameKey].map((item, index) => (
+                    <div
+                      key={item.id}
+                      className={`ranking-item ${
+                        index < 3 ? `rank-${index + 1}` : ''
+                      }`}
+                    >
+                      <span className="rank">{index + 1}</span>
 
-                  if (toDisplay.length === 0) {
-                    return <p className="no-data">해당 닉네임의 점수가 없습니다.</p>;
-                  }
+                      <span className="nickname">
+                        {editingId === item.id ? (
+                          <input
+                            className="nickname-input"
+                            value={editingNickname}
+                            onChange={(e) => setEditingNickname(e.target.value)}
+                          />
+                        ) : (
+                          item.nickname
+                        )}
+                      </span>
 
-                  return toDisplay.map((item) => {
-                    const origIndex = list.findIndex((it) => it.id === item.id);
-                    const displayRank = origIndex >= 0 ? origIndex + 1 : '-';
-                    return (
-                      <div
-                        key={item.id}
-                        className={`ranking-item ${
-                          origIndex < 3 && origIndex >= 0 ? `rank-${origIndex + 1}` : ''
-                        }`}
-                      >
-                        <span className="rank">{displayRank}</span>
+                      <span className="score">{item.score}</span>
 
-                        <span className="nickname">
-                          {editingId === item.id ? (
-                            <input
-                              className="nickname-input"
-                              value={editingNickname}
-                              onChange={(e) => setEditingNickname(e.target.value)}
-                            />
-                          ) : (
-                            item.nickname
-                          )}
-                        </span>
-
-                        <span className="score">{item.score}</span>
-
-                        <span className="actions">
-                          {editingId === item.id ? (
-                            <>
-                              <button
-                                className="edit-save-btn"
-                                onClick={() => handleEditSave(item)}
-                              >
-                                저장
-                              </button>
-                              <button
-                                className="edit-cancel-btn"
-                                onClick={handleEditCancel}
-                              >
-                                취소
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                className="edit-btn"
-                                onClick={() => handleEditClick(item)}
-                              >
-                                수정
-                              </button>
-                              <button
-                                className="delete-btn"
-                                onClick={() => handleDelete(item.id)}
-                                title="삭제"
-                              >
-                                ✕
-                              </button>
-                            </>
-                          )}
-                        </span>
-                      </div>
-                    );
-                  });
-                })()}
-              </div>
-            ) : (
-              <p className="no-data">등록된 점수가 없습니다.</p>
-            )}
-          </div>
+                      <span className="actions">
+                        {editingId === item.id ? (
+                          <>
+                            <button
+                              className="edit-save-btn"
+                              onClick={() => handleEditSave(item)}
+                            >
+                              저장
+                            </button>
+                            <button
+                              className="edit-cancel-btn"
+                              onClick={handleEditCancel}
+                            >
+                              취소
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="edit-btn"
+                              onClick={() => handleEditClick(item)}
+                            >
+                              수정
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleDelete(item.id)}
+                              title="삭제"
+                            >
+                              ✕
+                            </button>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="no-data">등록된 점수가 없습니다.</p>
+              )}
+            </div>
+          )
         ))}
       </div>
 
