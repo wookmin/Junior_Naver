@@ -118,9 +118,12 @@ const ReactionSpeed = ({ nickname }) => {
     // --- 게임 진행 화면 렌더링 ---
     return (
         <div 
-            className={`reaction-game-container state-${state}`} 
-            onMouseDown={(e) => e.stopPropagation()} // 게임 진행 화면에서 클릭 이벤트 전파 방지
-        >
+                className={`reaction-game-container state-${state}`} 
+                onMouseDown={(e) => { e.stopPropagation(); handleClick(); }} // 클릭하면 게임 동작
+                onTouchStart={(e) => { e.stopPropagation(); handleClick(); }} // 터치 지원
+                role="button"
+                tabIndex={0}
+            >
             {state === 'waiting' && result.length === 0 && <h1>Reaction Speed Test</h1>}
             <div className="game-message">{message}</div>
             {state === 'waiting' && result.length > 0 && 
